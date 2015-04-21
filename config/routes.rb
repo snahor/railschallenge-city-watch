@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :emergencies, only: [:index, :show, :create, :update, :destroy], defaults: { format: 'json' }
+  resources :emergencies, only: [:index, :show, :create, :update, :destroy], defaults: { format: 'json' }, param: :code
 
   match '*path', to: 'application#not_found', via: :all
 end

@@ -31,14 +31,10 @@ class EmergenciesController < ApplicationController
   # PATCH/PUT /emergencies/1
   # PATCH/PUT /emergencies/1.json
   def update
-    respond_to do |format|
-      if @emergency.update(emergency_params)
-        format.html { redirect_to @emergency, notice: 'Emergency was successfully updated.' }
-        format.json { render :show, status: :ok, location: @emergency }
-      else
-        format.html { render :edit }
-        format.json { render json: @emergency.errors, status: :unprocessable_entity }
-      end
+    if @emergency.update(emergency_params)
+      render :show, status: :ok, location: @emergency
+    else
+      render json: { message: @emergency.errors }, status: :unprocessable_entity
     end
   end
 
@@ -56,11 +52,17 @@ class EmergenciesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_emergency
-    @emergency = Emergency.find(params[:code])
+    @emergency = Emergency.find_by!(code: params[:code])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def emergency_params
-    params.require(:emergency).permit(:code, :fire_severity, :police_severity, :medical_severity, :full_response)
+    allowed_parameters = [:fire_severity, :police_severity, :medical_severity, :full_response]
+    if !@emergency || @emergency.new_record?
+      allowed_parameters << :code
+    else
+      allowed_parameters << :resolved_at
+    end
+    params.require(:emergency).permit(*allowed_parameters)
   end
 end
