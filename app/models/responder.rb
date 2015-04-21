@@ -1,5 +1,7 @@
 class Responder < ActiveRecord::Base
   validates :type, presence: true
-  validates :name, presence: true
-  validates :capacity, presence: true, numericality: { only_integer: true, greater_than: 0, lesser_than: 6 }
+  validates :name, presence: true, uniqueness: true
+  validates :capacity, presence: true, inclusion: { in: 1..5 }
+
+  self.inheritance_column = 'not_sti'
 end
