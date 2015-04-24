@@ -4,7 +4,11 @@ class RespondersController < ApplicationController
   # GET /responders
   # GET /responders.json
   def index
-    @responders = Responder.all
+    if params[:show] == 'capacity'
+      render json: { capacity: Responder.capacity_summary }
+    else
+      @responders = Responder.eager_load(:emergency).all
+    end
   end
 
   # GET /responders/1
@@ -61,7 +65,7 @@ class RespondersController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_responder
-    @responder = Responder.find_by!(name: params[:name])
+    @responder = Responder.eager_load(:emergency).find_by!(name: params[:name])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
