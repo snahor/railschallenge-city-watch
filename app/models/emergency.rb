@@ -12,7 +12,7 @@ class Emergency < ActiveRecord::Base
   scope :full_responses, -> { where(full_response: true) }
 
   def responders_names
-    responders.select('name').map(&:name)
+    responders.pluck(:name)
   end
 
   def self.response_summary

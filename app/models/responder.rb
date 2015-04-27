@@ -16,8 +16,8 @@ class Responder < ActiveRecord::Base
     available = Responder.available.capacity_sum
     on_duty = Responder.on_duty.capacity_sum
     available_on_duty = Responder.available.on_duty.capacity_sum
-    Responder.capacity_sum.map do |k, v|
-      data[k] = [v, available[k] || 0, on_duty[k] || 0, available_on_duty[k] || 0]
+    Responder.capacity_sum.each do |k, v|
+      data[k] = [v, available.fetch(k, 0), on_duty.fetch(k, 0), available_on_duty.fetch(k, 0)]
     end
     data
   end
